@@ -202,6 +202,7 @@ var openCreateDialog = function (x, y) {
   Session.set("createCoords", {x: x, y: y});
   Session.set("createError", null);
   Session.set("showCreateDialog", true);
+  $('.modal').modal('show');
 };
 
 Template.page.showCreateDialog = function () {
@@ -227,6 +228,7 @@ Template.createDialog.events({
       Session.set("selected", id);
       if (! public && Meteor.users.find().count() > 1)
         openInviteDialog();
+      $('.modal-backdrop').remove();
       Session.set("showCreateDialog", false);
     } else {
       Session.set("createError",
@@ -236,11 +238,19 @@ Template.createDialog.events({
 
   'click .cancel': function () {
     Session.set("showCreateDialog", false);
+  },
+
+  'click .close': function () {
+    Session.set("showCreateDialog", false);
   }
 });
 
+Template.createDialog.rendered = function () {
+  $('.modal').modal('show');
+};
+
 Template.createDialog.error = function () {
-  return Session.get("createError");
+    return Session.get("createError");
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -248,6 +258,7 @@ Template.createDialog.error = function () {
 
 var openInviteDialog = function () {
   Session.set("showInviteDialog", true);
+  $('.modal').modal('show');
 };
 
 Template.page.showInviteDialog = function () {
@@ -259,6 +270,7 @@ Template.inviteDialog.events({
     Meteor.call('invite', Session.get("selected"), this._id);
   },
   'click .done': function (event, template) {
+    $('.modal-backdrop').remove();
     Session.set("showInviteDialog", false);
     return false;
   }
@@ -274,4 +286,16 @@ Template.inviteDialog.uninvited = function () {
 
 Template.inviteDialog.displayName = function () {
   return displayName(this);
+};
+
+Template.inviteDialog.rendered = function () {
+  $('.modal').modal('show');
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Invite Alert
+Session.set("showInviteAlert", true);
+
+Template.inviteAlerts.partyName = function () {
+  return "party";
 };

@@ -18,14 +18,12 @@
 
   <div class="container">
     <div class="row">
-      <div class="span1"> </div>
-
-      <div class="span10">
+      <div class="col-md-11">
         <div class="header row">
-          <div class="span5">
+          <div class="col-md-6">
             <h3 style="margin-bottom: 0px">All Tomorrow's Parties</h3>
           </div>
-          <div class="span5">
+          <div class="col-md-5">
             <div style="float: right">
               {{loginButtons align="right"}}
             </div>
@@ -33,7 +31,7 @@
         </div>
 
         <div class="row">
-          <div class="span6">
+          <div class="col-md-7">
             {{> map}}
             {{#if currentUser}}
             <div class="pagination-centered">
@@ -41,13 +39,18 @@
             </div>
             {{/if}}
           </div>
-          <div class="span4">
+          <div class="col-md-4">
             {{> details}}
           </div>
         </div>
       </div>
-
-      <div class="span1"> </div>
+    </div>
+    <div class="row">
+      <div class="col-md-11">
+        {{#if showInviteAlert}}
+          {{> inviteAlerts}}
+        {{/if}}
+      </div>
     </div>
   </div>
 </template>
@@ -82,11 +85,11 @@
         <div class="rsvp-buttons">
           {{#if currentUser}}
             <input type="button" value="I'm going!"
-                   class="btn btn-small rsvp_yes {{maybeChosen "yes"}}">
+                   class="btn btn-default rsvp_yes {{maybeChosen "yes"}}">
             <input type="button" value="Maybe"
-                   class="btn btn-small rsvp_maybe {{maybeChosen "maybe"}}">
+                   class="btn btn-default rsvp_maybe {{maybeChosen "maybe"}}">
             <input type="button" value="No"
-                   class="btn btn-small rsvp_no {{maybeChosen "no"}}">
+                   class="btn btn-default rsvp_no {{maybeChosen "no"}}">
           {{else}}
             <i>Sign in to RSVP for this party.</i>
           {{/if}}
@@ -119,7 +122,7 @@
     {{#if public}}
       <div>
         <b>Everyone</b>
-        <span class="label label-inverse pull-right">Invited</span>
+        <span class="label label-inverse pull-right invited-color">Invited</span>
       </div>
     {{/if}}
 
@@ -160,59 +163,82 @@
 </template>
 
 <template name="createDialog">
-  <div class="mask"> </div>
-  <div class="modal">
-    <div class="modal-header">
-      <button type="button" class="close cancel">&times;</button>
-      <h3>Add party</h3>
-    </div>
+  <div class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h3>Add party</h3>
+        </div>
+        {{#isolate}}
+        <div class="modal-body">
+          {{#if error}}
+            <div class="alert alert-danger">{{error}}</div>
+          {{/if}}
+          <div>
+            <div class="form-group">
+              <label for="titleInput">Title</label>
+              <input id="titleInput" type="text" class="title form-control">
+            </div>
 
-    <div class="modal-body">
-      {{#if error}}
-        <div class="alert alert-error">{{error}}</div>
-      {{/if}}
+            <div class="form-group">
+              <label for="descInput">Description</label>
+              <textarea id="descInput" class="description form-control"></textarea>
+            </div>
 
-      <label>Title</label>
-      <input type="text" class="title span5">
+            <div class="form-group">
+              <label class="checkbox">
+                <input type="checkbox" class="private">
+                Private party &mdash; invitees only
+              </label>
+            </div>
+        </div>
 
-      <label>Description</label>
-      <textarea class="description span5"></textarea>
-
-      <label class="checkbox">
-        <input type="checkbox" class="private">
-        Private party &mdash; invitees only
-      </label>
-    </div>
-
-    <div class="modal-footer">
-      <a href="#" class="btn cancel">Cancel</a>
-      <a href="#" class="btn btn-primary save">Add party</a>
+        <div class="modal-footer">
+          <a href="#" class="btn cancel" data-dismiss="modal">Cancel</a>
+          <a href="#" class="btn btn-primary save" >Add party</a>
+        </div>
+      </div>
+      {{/isolate}}
     </div>
   </div>
 </template>
 
 <template name="inviteDialog">
-  <div class="mask"> </div>
-  <div class="modal">
-    <div class="modal-header">
-      <button type="button" class="close done">&times;</button>
-      <h3>Invite people</h3>
-    </div>
-
-    <div class="modal-body">
-      {{#each uninvited}}
-        <div class="invite-row">
-          <a href="#" class="btn invite">Invite</a>
-          {{displayName}}
+  <div class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close done">&times;</button>
+          <h3>Invite people</h3>
         </div>
-      {{else}}
-        Everyone on the site has already been invited.
-      {{/each}}
-    </div>
-
-    <div class="modal-footer">
-      <a href="#" class="btn btn-primary done">Done</a>
+        {{#isolate}}
+          <div class="modal-body">
+            {{#each uninvited}}
+              <div class="invite-row">
+                <a href="#" class="btn invite">Invite</a>
+                {{displayName}}
+              </div>
+            {{else}}
+              Everyone on the site has already been invited.
+            {{/each}}
+          </div>
+        {{/isolate}}
+        <div class="modal-footer">
+          <a href="#" class="btn btn-primary done">Done</a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
+<template name="inviteAlerts">
+  <div class="alert alert-info">
+    You have an invite for <a href="#" class="alert-link">go to </a>.
+  </div>
+  {{#each inviteRequest}}
+    <div class="alert alert-info">
+      You have an invite for <a href="#" class="alert-link">go to {{partyName}}</a>.
+    </div>
+  {{/each}}
+</template>

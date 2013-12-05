@@ -28,6 +28,7 @@
 
 .description {
     margin: 20px 0 20px 0;
+    resize: none;
 }
 
 .attendance .who {
@@ -78,4 +79,8 @@ input.chosen {
     background-color: white;
     padding: 3px;
     padding-bottom: 0;
+}
+
+.invited-color {
+    background-color: black;
 }
