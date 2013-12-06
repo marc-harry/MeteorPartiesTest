@@ -17,6 +17,10 @@ Meteor.startup(function () {
   });
 });
 
+Accounts.ui.config({
+  passwordSignupFields: "USERNAME_AND_EMAIL"
+});
+
 ///////////////////////////////////////////////////////////////////////////////
 // Party details sidebar
 
@@ -209,6 +213,18 @@ Template.page.showCreateDialog = function () {
   return Session.get("showCreateDialog");
 };
 
+Template.page.showInviteAlert = function () {
+  var parties = Parties.find({ invited: Meteor.userId(), "rsvps.user": {$nin: [Meteor.userId()]} });
+  if (parties) {
+    return true;
+  } else {
+    return false;
+  }
+  //return Session.get("showInviteAlert");
+};
+
+
+
 Template.createDialog.events({
   'click .save': function (event, template) {
     var title = template.find(".title").value;
@@ -294,8 +310,17 @@ Template.inviteDialog.rendered = function () {
 
 ///////////////////////////////////////////////////////////////////////////////
 // Invite Alert
-Session.set("showInviteAlert", true);
 
 Template.inviteAlerts.partyName = function () {
-  return "party";
+  return this.title;
+};
+
+Template.inviteAlerts.events({
+  'click .rsvpInvite': function (event, template) {
+    Session.set("selected", this._id);
+  }
+});
+
+Template.inviteAlerts.inviteRequest = function() {
+  return Parties.find({ invited: Meteor.userId(), "rsvps.user": {$nin: [Meteor.userId()]} });
 };

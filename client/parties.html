@@ -136,7 +136,7 @@
           <span class="label label-info pull-right">Maybe</span>
         {{/if}}
         {{#if rsvpIs "no"}}
-          <span class="label label pull-right">No</span>
+          <span class="label label-warning pull-right">No</span>
         {{/if}}
       </div>
     {{/each}}
@@ -233,12 +233,9 @@
 </template>
 
 <template name="inviteAlerts">
-  <div class="alert alert-info">
-    You have an invite for <a href="#" class="alert-link">go to </a>.
-  </div>
   {{#each inviteRequest}}
     <div class="alert alert-info">
-      You have an invite for <a href="#" class="alert-link">go to {{partyName}}</a>.
+      You have an invite to go to <a href="#" class="alert-link rsvpInvite">Party: {{partyName}} outstanding. Please RSVP</a>.
     </div>
   {{/each}}
 </template>
