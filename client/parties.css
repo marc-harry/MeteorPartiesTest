@@ -2,6 +2,10 @@
     padding: 20px 0;
 }
 
+body {
+    padding-top: 45px;
+}
+
 .details {
     margin-top: -18px;
 }
@@ -83,4 +87,12 @@ input.chosen {
 
 .invited-color {
     background-color: black;
+}
+
+.accounts-dialog {
+    width: 250px;
+}
+
+.login-button {
+
 }

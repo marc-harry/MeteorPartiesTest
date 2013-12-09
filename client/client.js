@@ -322,5 +322,5 @@ Template.inviteAlerts.events({
 });
 
 Template.inviteAlerts.inviteRequest = function() {
-  return Parties.find({ invited: Meteor.userId(), "rsvps.user": {$nin: [Meteor.userId()]} });
+  return Parties.find({ invited: Meteor.userId(), "rsvps.user": { $ne: Meteor.userId() } });
 };
