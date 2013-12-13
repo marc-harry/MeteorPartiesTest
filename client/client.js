@@ -324,3 +324,15 @@ Template.inviteAlerts.events({
 Template.inviteAlerts.inviteRequest = function() {
   return Parties.find({ invited: Meteor.userId(), "rsvps.user": { $ne: Meteor.userId() } });
 };
+
+///////////////////////////////////////////////////////////////////////////////
+// Navbar Actions
+
+Template.layout.partyAlerts = function () {
+  var partyCount = Parties.find({ invited: Meteor.userId(), "rsvps.user": { $ne: Meteor.userId() } }).count();
+  return partyCount == 0 ? '' : partyCount;
+};
+
+Template.layout.activeBootTab = function (route) {
+  return Session.get("activeBootTab") == route ? "active" : "";
+}

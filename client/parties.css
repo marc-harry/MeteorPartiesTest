@@ -2,8 +2,8 @@
     padding: 20px 0;
 }
 
-body {
-    padding-top: 45px;
+.body-content {
+    padding-top: 50px;
 }
 
 .details {
@@ -87,12 +87,4 @@ input.chosen {
 
 .invited-color {
     background-color: black;
-}
-
-.accounts-dialog {
-    width: 250px;
-}
-
-.login-button {
-
 }
