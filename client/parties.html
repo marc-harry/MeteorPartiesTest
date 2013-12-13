@@ -2,6 +2,7 @@
   <title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="/networking.ico">
+  <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 </head>
 
 <body>   
@@ -80,6 +81,9 @@
       </div>
     </div>
   </div>
+  <div>
+    {{> footerSection}}
+  </div>
 </template>
 
 <template name="chat">
@@ -111,6 +115,26 @@
       </div>
     </div>
   </div>
+</template>
+
+<template name="footerSection">
+  <div id="contact-us" class="arrow_box">
+    <section class="container">
+      <h2 style="color: white;">Contact Us</h2>
+      <address>
+        Swansea<br />
+        SA1, Wales<br />
+        <abbr title="Phone">P:</abbr> None
+      </address>
+      <address>
+        <strong>Enquiries:</strong>   <a href="mailto:mjharry1@hotmail.co.uk">mjharry1@hotmail.co.uk</a>
+      </address>
+    </section>
+  </div>
+  <section id="maps-section">
+    <div id="map_canvas">
+    </div>
+  </section>
 </template>
 
 <template name="map">

@@ -10,6 +10,13 @@ Meteor.publish("parties", function () {
 });
 
 Accounts.validateNewUser(function (user) {
+	if(user.username == undefined) {
+		if(user.services.github) {
+			user.username = user.services.github.username;
+			user.profile.name = user.services.github.username;
+		}
+	}
+  
   if (user.username && user.username.length >= 3)
     return true;
   throw new Meteor.Error(403, "Username must have at least 3 characters");

@@ -336,3 +336,18 @@ Template.layout.partyAlerts = function () {
 Template.layout.activeBootTab = function (route) {
   return Session.get("activeBootTab") == route ? "active" : "";
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Footer Template
+
+Template.footerSection.rendered = function () {
+  var map_canvas = document.getElementById('map_canvas');
+
+  var mapOptions = {
+      center: new google.maps.LatLng(51.621534, -3.943541),
+      zoom: 14,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  
+  var map = new google.maps.Map(map_canvas, mapOptions);
+};

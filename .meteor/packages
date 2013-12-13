@@ -8,8 +8,9 @@ preserve-inputs
 accounts-password
 d3
 email
-accounts-twitter
 audit-argument-checks
 bootstrap-3
 accounts-ui-bootstrap-3
 iron-router
+less
+accounts-github
