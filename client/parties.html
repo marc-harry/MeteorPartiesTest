@@ -100,9 +100,11 @@
     </div>
     <div>
       <div style="float: left; width:75%; padding-right:5px;" id="activeChats">
+      {{#constant}}
         <ul class="nav nav-tabs">
           <li id="chatTabYou" class="active"><a href="#You" data-toggle="tab">You</a></li>
         </ul>
+        {{/constant}}
         <div class="tab-content" id="activeChatsContent">
           <div class="tab-pane fade in active" id="{{activeChatUser}}">
             <ul id="discussion" class="chat" style="padding-top:5px; overflow-y:scroll;">

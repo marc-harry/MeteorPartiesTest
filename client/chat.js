@@ -67,6 +67,9 @@ Template.chat.events({
 	'click li a': function (event, template) {
 		event.preventDefault();
 		var name = event.currentTarget.innerText;
+		if(event.currentTarget.childNodes.length == 2) {
+			name = event.currentTarget.childNodes[1].nodeValue;
+		}
 		Session.set("chatUser", name);
 		if (!$('#chatTab' + name).length) {
 	        var height = $('#chatContainer').height() - 140;
@@ -75,21 +78,30 @@ Template.chat.events({
 	        
 	        $('#chatTab' + name + ' a[href="#' + name + '"]').tab('show');   
 	    } else {
-	    	
 	        $('#chatTab' + name + ' a[href="#' + name + '"]').tab('show');
 	    }
 	},
 
 	'click .close': function (event, template) {
 		event.preventDefault();
-		var name = Session.get("chatUser", name);
+		var name = event.currentTarget.innerText;
+		if(event.currentTarget.parentElement.childNodes.length == 2) {
+			name = event.currentTarget.parentElement.childNodes[1].nodeValue;
+		}
+		var isActiveTab = Session.get("chatUser") == name ? true : false;
+
 		var controlName = '#chatTab' + name;
-	    var index = $('#activeChats > ul > li').index($(controlName)) - 1;
-	    $(controlName).remove();
-	    $('#activeChats li a:eq(' + Number(index) + ')').tab('show');
-	    var newName = $(".nav-tabs .active a").html();
-	    if(newName = "You") newName = Meteor.user().username;
-	    Session.set("chatUser", newName);
+
+		if(isActiveTab) {
+		    var index = $('#activeChats > ul > li').index($(controlName)) - 1;
+		    $(controlName).remove();
+		    $('#activeChats li a:eq(' + Number(index) + ')').tab('show');
+		    var newName = $(".nav-tabs .active a").html();
+		    if(newName == "You") newName = Meteor.user().username;
+		    Session.set("chatUser", newName);
+		} else {
+			$(controlName).remove();
+		}
 	}
 });
 
