@@ -2,6 +2,7 @@
 
 Meteor.subscribe("directory");
 Meteor.subscribe("parties");
+Meteor.subscribe("chats");
 
 // If no party selected, or if the selected party was deleted, select one.
 Meteor.startup(function () {

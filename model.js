@@ -58,6 +58,12 @@ createParty = function (options) {
   return id;
 };
 
+createMessage = function (options) {
+  var id = Random.id();
+  Meteor.call('createMessage', _.extend({ _id: id }, options));
+  return id;
+};
+
 Meteor.methods({
   // options should include: title, description, x, y, public
   createParty: function (options) {
@@ -88,6 +94,31 @@ Meteor.methods({
       public: !! options.public,
       invited: [],
       rsvps: []
+    });
+    return id;
+  },
+
+  createMessage: function (options) {
+    check(options, {
+      message: NonEmptyString,
+      date: Match.Any,
+      sentTo: NonEmptyString,
+      _id: Match.Optional(NonEmptyString)
+    });
+
+    if (options.message.length > 2000)
+      throw new Meteor.Error(413, "Message to long!");
+    if (! this.userId)
+      throw new Meteor.Error(403, "You must be logged in");
+
+    var id = options._id || Random.id();
+    Chats.insert({
+      _id: id,
+      owner: this.userId,
+      message: options.message,
+      date: options.date,
+      sentTo: options.sentTo,
+      isDeleted: 0
     });
     return id;
   },
@@ -181,3 +212,8 @@ var contactEmail = function (user) {
     return user.services.facebook.email;
   return null;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+// Chats
+
+Chats = new Meteor.Collection("chats");
