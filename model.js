@@ -64,6 +64,10 @@ createMessage = function (options) {
   return id;
 };
 
+markSeen = function (options) {
+  Meteor.call('markSeen', options);
+};
+
 Meteor.methods({
   // options should include: title, description, x, y, public
   createParty: function (options) {
@@ -118,7 +122,8 @@ Meteor.methods({
       message: options.message,
       date: options.date,
       sentTo: options.sentTo,
-      isDeleted: 0
+      isDeleted: 0,
+      seen: false
     });
     return id;
   },
@@ -193,6 +198,14 @@ Meteor.methods({
       Parties.update(partyId,
                      {$push: {rsvps: {user: this.userId, rsvp: rsvp}}});
     }
+  },
+
+  markSeen: function (options) {
+    check(options, {
+      sentFrom: NonEmptyString,
+      sentTo: NonEmptyString
+    });
+    Chats.update( { owner: options.sentFrom, sentTo: options.sentTo, seen: false }, { $set: { seen: true } }, { multi: true } );
   }
 });
 
@@ -217,3 +230,5 @@ var contactEmail = function (user) {
 // Chats
 
 Chats = new Meteor.Collection("chats");
+
+map = null;

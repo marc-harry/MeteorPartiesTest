@@ -15,9 +15,9 @@ Template.chat.messages = function () {
 	}
 
 	var resultMessages = [];
-	var listOfMessages = Chats.find({ owner: Meteor.userId(), sentTo: id }, { sort: { date: 1 }}).fetch();
+	var listOfMessages = Chats.find({ owner: Meteor.userId(), sentTo: id }, { sort: { date: -1 }}).fetch();
 	if(id != Meteor.userId()) {
-		var otherMessage = Chats.find({ owner: id, sentTo: Meteor.userId() }, { sort: { date: 1 }}).fetch();
+		var otherMessage = Chats.find({ owner: id, sentTo: Meteor.userId() }, { sort: { date: -1 }}).fetch();
 		resultMessages = listOfMessages.concat(otherMessage);
 		resultMessages.sort(function (a,b) {
 			return parseFloat(a.date) - parseFloat(b.date)
@@ -34,7 +34,7 @@ Template.chat.activeChatUser = function () {
 };
 
 Template.chat.loggedInUsers = function () {
-	return Meteor.users.find({}, { sort: { username: 1 } });
+	return Meteor.users.find( { username: { $ne: Meteor.user().username } }, { sort: { username: 1 } } );
 };
 
 Template.chat.events({
@@ -62,6 +62,13 @@ Template.chat.events({
 				listMessages.focus(listMessages.length);
 			}
 		}
+
+		markSeen({ 
+			sentTo: Meteor.userId(), 
+			sentFrom: userId
+		});
+
+		// Meteor.setTimeout(function () { template.find("#discussion li:last").focus() }, 100);
 	},
 
 	'click li a': function (event, template) {
@@ -80,6 +87,15 @@ Template.chat.events({
 	    } else {
 	        $('#chatTab' + name + ' a[href="#' + name + '"]').tab('show');
 	    }
+
+	    if(name != "You") {
+	    	markSeen({ 
+				sentTo: Meteor.userId(), 
+				sentFrom: Meteor.users.findOne({ username: name })._id
+			});
+	    }
+
+	    // Meteor.setTimeout(function () { template.find("#discussion li:last").focus() }, 100);
 	},
 
 	'click .close': function (event, template) {
@@ -96,8 +112,12 @@ Template.chat.events({
 		    var index = $('#activeChats > ul > li').index($(controlName)) - 1;
 		    $(controlName).remove();
 		    $('#activeChats li a:eq(' + Number(index) + ')').tab('show');
-		    var newName = $(".nav-tabs .active a").html();
-		    if(newName == "You") newName = Meteor.user().username;
+		    var newName = $(".nav-tabs .active a").text();
+		    if(newName == "You") {
+		    	newName = Meteor.user().username;
+		    } else {
+		    	newName = newName.replace(newName.substring(0, 2), "");
+		    }
 		    Session.set("chatUser", newName);
 		} else {
 			$(controlName).remove();
@@ -117,34 +137,12 @@ Template.message.helpers({
 	}
 });
 
-otherPersonMessage = function (name, message, time, image) {
-    var htmlString = '<li tabindex="1" class="left clearfix"><span class="chat-img pull-left"><img src="{3}" alt="{0}" class="img-circle" /></span>';
-    htmlString += '<div class="chat-body clearfix"><div class="header">';
-    htmlString += '<strong class="primary-font">{0}</strong><small class="pull-right text-muted">';
-    htmlString += '<span class="glyphicon glyphicon-time"></span>{2}</small></div><p>';
-    htmlString += '{1}';
-    htmlString += '</p></div></li>';
-
-    var date = moment(time).format("hh:mmA D/M/YY");
-
-    var finalOutput = String.format(htmlString, name, message, date, image);
-		
-    return finalOutput;
-};
-
-yourMessage = function (name, message, time, image) {
-    var htmlString = '<li tabindex="1" class="right clearfix"><span class="chat-img pull-right"><img src="{3}" alt="{0}" class="img-circle" /></span>';
-    htmlString += '<div class="chat-body clearfix"><div class="header">';
-    htmlString += '<small class=" text-muted"><span class="glyphicon glyphicon-time"></span>{2}</small><strong class="pull-right primary-font">{0}</strong>';
-    htmlString += '</div><p>{1}</p>';
-    htmlString += '</div></li>';
-
-    var date = moment(time).format("hh:mmA D/M/YY");
-
-    var finalOutput = String.format(htmlString, name, message, date, image);
-
-    return finalOutput;
-};
+Template.onlineUsers.helpers({
+	messagesUnseen: function () {
+		var num = Chats.find({ owner: this._id, sentTo: Meteor.userId(), seen: false }, { sort: { date: 1 }}).count();
+		return num == 0 ? "" : num;
+	}
+});
 
 String.format = function (format) {
     var args = Array.prototype.slice.call(arguments, 1);

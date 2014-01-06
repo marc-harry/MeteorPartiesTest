@@ -118,6 +118,30 @@ var coordsRelativeToElement = function (element, event) {
   return { x: x, y: y };
 };
 
+Template.mapNew.rendered = function () {
+  var mapOptions = {
+    disableDoubleClickZoom: true,
+    zoom: 14,
+    center: Session.get("userPosition") == undefined ? new google.maps.LatLng(51.621534, -3.943541) : Session.get("userPosition")
+  };
+
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+  google.maps.event.addListener(map, 'dblclick', function(e) {
+    placeMarker(e.latLng, map);
+  });
+};
+
+function placeMarker(position, map) {
+  var marker = new google.maps.Marker({
+    position: position,
+    map: map
+  });
+}
+
+/**
+
 Template.map.events({
   'mousedown circle, mousedown text': function (event, template) {
     Session.set("selected", event.currentTarget.id);
@@ -199,6 +223,8 @@ Template.map.rendered = function () {
 Template.map.destroyed = function () {
   this.handle && this.handle.stop();
 };
+
+*/
 
 ///////////////////////////////////////////////////////////////////////////////
 // Create Party dialog

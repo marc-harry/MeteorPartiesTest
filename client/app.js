@@ -13,6 +13,9 @@ Router.map(function () {
     action: function () {
       Session.set("activeBootTab", "home");
       document.title = "Home";
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+      }
       this.render('page');
     }
   });
@@ -23,6 +26,7 @@ Router.map(function () {
     before: function () {
       if(!Meteor.user()) {
         this.router.go("home");
+        alert("Please login to use chat.");
         this.stop();
       }
     },
@@ -33,3 +37,12 @@ Router.map(function () {
     }
   });
 });
+
+function success(position) {
+  Session.set("userPosition", new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+  map.panTo(new google.maps.LatLng(Session.get("userPosition").nb, Session.get("userPosition").ob));
+}
+
+function error(msg) {
+  Session.set("userPosition", new google.maps.LatLng(0, 0));
+}

@@ -1,0 +1,64 @@
+<template name="chat">
+  <div class="container" id="chatContainer" style="height:700px;">
+    <h2>Chat</h2>
+    <div style="width:100%;">
+      <form class="form-inline" onsubmit="return false;" role="form" style="width: 75%; padding-bottom: 5px;">
+        <div class="form-group" style="width: 90%">
+          <input type="text" id="message" class="form-control" placeholder="Message..." />
+        </div>
+        <a id="sendmessage" class="btn btn-default">Send</a>
+      </form>
+      <div style="width: 25%; float: left;"></div>
+    </div>
+    <div>
+      <div style="float: left; width:75%; padding-right:5px;" id="activeChats">
+      {{#constant}}
+        <ul class="nav nav-tabs">
+          <li id="chatTabYou" class="active"><a href="#You" data-toggle="tab">You</a></li>
+        </ul>
+        {{/constant}}
+        <div class="tab-content" id="activeChatsContent">
+          <div class="tab-pane fade in active" id="{{activeChatUser}}">
+            <ul id="discussion" class="chat" style="padding-top:5px; overflow-y:scroll;">
+              {{#each messages}}
+                {{> message}}
+              {{/each}}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div style="float:left; width:25%; height:100%;" id="loggedIntoChat">
+        <h4>Users</h4>
+        <ul class="list-group">
+          {{#each loggedInUsers}}
+            {{> onlineUsers}}
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="message">
+  <li tabindex="1" class="right clearfix">
+    <span class="chat-img pull-right"><img src="{{meOrYou}}" class="img-circle" /></span>
+    <div class="chat-body clearfix">
+      <div class="header">
+        <small class=" text-muted"><span class="glyphicon glyphicon-time"></span> {{formattedDate}}</small>
+        <strong class="pull-right primary-font">{{displayChatName}}</strong>
+      </div><p>{{message}}</p>
+    </div>
+  </li>
+</template>
+
+<template name="onlineUsers">
+  <li class="list-group-item">
+    {{#if status.online 'true'}}
+      <i class="fa fa-circle online-color"></i>
+    {{else}}
+      <i class="fa fa-circle offline-color"></i>
+    {{/if}}
+    <a>{{username}}</a>
+    <span class="badge pull-right">{{messagesUnseen}}</span>
+  </li>
+</template>
