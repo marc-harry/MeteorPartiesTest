@@ -13,10 +13,12 @@ Router.map(function () {
     action: function () {
       Session.set("activeBootTab", "home");
       document.title = "Home";
+      this.render('page');
+    },
+    before: function () {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(success, error);
       }
-      this.render('page');
     }
   });
 
@@ -39,10 +41,12 @@ Router.map(function () {
 });
 
 function success(position) {
-  Session.set("userPosition", new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
-  map.panTo(new google.maps.LatLng(Session.get("userPosition").nb, Session.get("userPosition").ob));
+  Session.set("userPositionLat", position.coords.latitude);
+  Session.set("userPositionLong", position.coords.longitude);
+  map.panTo(new google.maps.LatLng(Session.get("userPositionLat"), Session.get("userPositionLong")));
 }
 
 function error(msg) {
-  Session.set("userPosition", new google.maps.LatLng(0, 0));
+  Session.set("userPositionLong", 0);
+  Session.set("userPositionLat", 0);
 }

@@ -119,10 +119,16 @@ var coordsRelativeToElement = function (element, event) {
 };
 
 Template.mapNew.rendered = function () {
+  var latLong;
+  if (!_.isUndefined(Session.get("userPositionLat")) && !_.isUndefined(Session.get("userPositionLong"))) {
+    latLong = new google.maps.LatLng(Session.get("userPositionLat"), Session.get("userPositionLong"));
+  } else {
+    latLong = new google.maps.LatLng(51.621534, -3.943541);
+  }
   var mapOptions = {
     disableDoubleClickZoom: true,
     zoom: 14,
-    center: Session.get("userPosition") == undefined ? new google.maps.LatLng(51.621534, -3.943541) : Session.get("userPosition")
+    center: latLong
   };
 
   map = new google.maps.Map(document.getElementById('map-canvas'),
